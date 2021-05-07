@@ -1,0 +1,82 @@
+{
+  "project_info": {
+    "project_number": "80183721162",
+    "project_id": "inspired-catering-c4232",
+    "storage_bucket": "inspired-catering-c4232.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:80183721162:android:18f4255e5308acbb564833",
+        "android_client_info": {
+          "package_name": "com.orgn.inscat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "80183721162-kdc7s8jflpdmfjsgb7q1md7d66u6ba6h.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAA6YGuAfUCkmgTZsDk3r3s2hdDMBuCmjQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "80183721162-kdc7s8jflpdmfjsgb7q1md7d66u6ba6h.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "80183721162-4cvv7mmcavcl3r54896dvo5rmu7ba3t4.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.orgn.vbcat"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:80183721162:android:620aef65e874ba3e564833",
+        "android_client_info": {
+          "package_name": "com.orgn.vbcat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "80183721162-kdc7s8jflpdmfjsgb7q1md7d66u6ba6h.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAA6YGuAfUCkmgTZsDk3r3s2hdDMBuCmjQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "80183721162-kdc7s8jflpdmfjsgb7q1md7d66u6ba6h.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "80183721162-4cvv7mmcavcl3r54896dvo5rmu7ba3t4.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.orgn.vbcat"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
