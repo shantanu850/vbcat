@@ -1,6 +1,11 @@
+import 'dart:convert';
+
+import 'package:dio/dio.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:inspired_catering/reset_forgot_password.dart';
 
+import 'components/api.dart';
 import 'components/footer.dart';
 
 class ForgotPassword extends StatefulWidget {
@@ -10,9 +15,12 @@ class ForgotPassword extends StatefulWidget {
 
 class _ForgotPasswordState extends State<ForgotPassword> {
   TextEditingController email = TextEditingController();
+  bool loging = true;
+  final scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: scaffoldKey,
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -42,6 +50,39 @@ class _ForgotPasswordState extends State<ForgotPassword> {
             ),
             SizedBox(height: 10),
             GestureDetector(
+              onTap: ()async{
+                var dio = Dio();
+                if(email.text.isNotEmpty){
+                  setState(() {
+                    loging = true;
+                  });
+                  var formData = FormData.fromMap({
+                    "email":email.text,
+                  });
+                  Response res = await  dio.post(Api().baseUrl+"bdpwr/v1/reset-password",
+                      data: formData
+                  );
+                  if(res.statusCode==200){
+                    print(res.data);
+                    if(res.data['data']['status'].toString()=="200"){
+                      setState(() {
+                        loging = false;
+                      });
+                      scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("Email Send !")));
+                    }else{
+                      setState(() {
+                        loging = false;
+                      });
+                      scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("Something went wrong ! try again !")));
+                    }
+                  }else{
+                    setState(() {
+                      loging = false;
+                    });
+                    scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("Server Unavailable ! try again")));
+                  }
+                }
+              },
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal:0,vertical:8),
                 child: Card(

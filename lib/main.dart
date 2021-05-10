@@ -6,6 +6,7 @@ import 'package:inspired_catering/components/footer.dart';
 import 'package:inspired_catering/home.dart';
 import 'package:inspired_catering/login.dart';
 import 'package:inspired_catering/register.dart';
+import 'package:notification_permissions/notification_permissions.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
