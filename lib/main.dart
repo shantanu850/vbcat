@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_apns/apns.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:inspired_catering/components/footer.dart';
 import 'package:inspired_catering/home.dart';
@@ -21,10 +22,25 @@ const AndroidNotificationChannel channel = AndroidNotificationChannel(
 );
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-
+final connector = createPushConnector();
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  connector.configure(
+    onLaunch: (RemoteMessage m){
+      print(m);
+      return null;
+    },
+    onResume: (RemoteMessage m){
+      print(m);
+      return null;
+    },
+    onMessage: (RemoteMessage m){
+      print(m);
+      return null;
+    },
+  );
+  connector.requestNotificationPermissions();
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   await flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()?.createNotificationChannel(channel);
   await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
@@ -57,8 +73,8 @@ class _LoaderState extends State<Loader> {
     super.initState();
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       RemoteNotification notification = message.notification;
-      AndroidNotification android = message.notification?.android;
-      if (notification != null && android != null) {
+      //AndroidNotification android = message.notification?.android;
+      if (notification != null) {
         flutterLocalNotificationsPlugin.show(
             notification.hashCode,
             notification.title,
@@ -79,6 +95,7 @@ class _LoaderState extends State<Loader> {
 
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
       print('A new onMessageOpenedApp event was published!');
+      print(message);
     });
   }
   @override

@@ -76,6 +76,7 @@ class _LoginScrrenState extends State<LoginScrren> {
                 onTap: ()async{
                   var dio = Dio();
                   var token = FirebaseMessaging.instance.getToken();
+                  var apnToken = FirebaseMessaging.instance.getAPNSToken();
                   var device = "Android";
                   if(Platform.isAndroid){
                     device = "Android";
