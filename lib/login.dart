@@ -75,7 +75,8 @@ class _LoginScrrenState extends State<LoginScrren> {
               !loging?GestureDetector(
                 onTap: ()async{
                   var dio = Dio();
-                  var token = FirebaseMessaging.instance.getToken();
+                  var token = await FirebaseMessaging.instance.getToken();
+                  print(token);
                   var apnToken = FirebaseMessaging.instance.getAPNSToken();
                   var device = "Android";
                   if(Platform.isAndroid){

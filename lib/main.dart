@@ -1,17 +1,20 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_apns/apns.dart';
+//import 'package:flutter_apns/apns.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:inspired_catering/components/database_helper.dart';
 import 'package:inspired_catering/components/footer.dart';
+import 'package:inspired_catering/components/todo.dart';
 import 'package:inspired_catering/home.dart';
 import 'package:inspired_catering/login.dart';
 import 'package:inspired_catering/register.dart';
-import 'package:notification_permissions/notification_permissions.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
-  print('Handling a background message ${message.messageId}');
+  DatabaseHelper databaseHelper = DatabaseHelper();
+  databaseHelper.insertTodo(Todo("${message.notification.title}", "${message.notification.body}"));
 }
 
 const AndroidNotificationChannel channel = AndroidNotificationChannel(
@@ -22,25 +25,11 @@ const AndroidNotificationChannel channel = AndroidNotificationChannel(
 );
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-final connector = createPushConnector();
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  connector.configure(
-    onLaunch: (RemoteMessage m){
-      print(m);
-      return null;
-    },
-    onResume: (RemoteMessage m){
-      print(m);
-      return null;
-    },
-    onMessage: (RemoteMessage m){
-      print(m);
-      return null;
-    },
-  );
-  connector.requestNotificationPermissions();
+  FirebaseMessaging.instance.requestPermission();
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   await flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()?.createNotificationChannel(channel);
   await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
@@ -49,8 +38,8 @@ Future<void> main() async {
     sound: true,
   );
   runApp( MaterialApp(home: Loader(),
-    theme: ThemeData(
-      fontFamily: 'proxima'
+    theme: ThemeData(fontFamily: 'proxima',
+      primaryColor: Colors.amber
     ),
     debugShowCheckedModeBanner:false,)
   );
@@ -67,13 +56,15 @@ class _LoaderState extends State<Loader> {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     return preferences.getBool('loged');
   }
+  DatabaseHelper databaseHelper = DatabaseHelper();
   @override
   void initState() {
     ff = getUser();
     super.initState();
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       RemoteNotification notification = message.notification;
-      //AndroidNotification android = message.notification?.android;
+      databaseHelper.insertTodo(Todo("${message.notification.title}", "${message.notification.body}"));
+      print(message);
       if (notification != null) {
         flutterLocalNotificationsPlugin.show(
             notification.hashCode,
@@ -94,8 +85,7 @@ class _LoaderState extends State<Loader> {
     });
 
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      print('A new onMessageOpenedApp event was published!');
-      print(message);
+      databaseHelper.insertTodo(Todo("${message.notification.title}", "${message.notification.body}"));
     });
   }
   @override
@@ -197,6 +187,25 @@ class _AuthState extends State<Auth> {
                 ),
               ),
             ),
+            SizedBox(height:20,),
+            GestureDetector(
+              onTap: ()async{
+                SharedPreferences p = await SharedPreferences.getInstance();
+                p.setBool('loged', false);
+                Navigator.push(context, MaterialPageRoute(builder: (context)=>HomeScreen()));},
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal:width*0.05),
+                child: Card(
+                  color: Colors.blueAccent,
+                  child: Container(
+                    width:width,
+                    height: 40,
+                    alignment: Alignment.center,
+                    child: Text("PROCEED AS GUEST USER",style: TextStyle(fontFamily:"proxima",fontWeight:FontWeight.w600,color: Colors.white),),
+                  ),
+                ),
+              ),
+            ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal:0,vertical:10),
               child: Image(image: AssetImage('assets/images/logo.jpeg'),height:120,),
@@ -206,10 +215,12 @@ class _AuthState extends State<Auth> {
               padding: const EdgeInsets.symmetric(vertical:10.0),
               child: Text("Copyright 2020 Inspired Catering - All Rights Reserved",style: TextStyle(fontFamily:"proxima",fontWeight:FontWeight.w400),textAlign:TextAlign.center,),
             ),
-            FooterVB()
           ],
         ),
       ),
+      bottomNavigationBar: Container(
+          height:90,
+          child: FooterVB()),
     );
   }
 }
